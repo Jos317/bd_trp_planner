@@ -23,8 +23,8 @@ class CreatePuntosTable extends Migration
             $table->string('Tipo', 1);
             $table->smallInteger('orden');
             $table->string('PuntoD', 4);
-            $table->float('LongiD', 8, 6);
-            $table->float('LatiD', 8, 6);
+            $table->decimal('LongiD', 8, 6);
+            $table->decimal('LatiD', 8, 6);
             $table->unsignedBigInteger('recorrido_id')->nullable();
             $table->foreign('recorrido_id')->references('id')->on('recorridos');
         });
