@@ -30,6 +30,8 @@ Route::get('linea', [LineaController::class, 'index'])->name('linea');
 Route::get('punto', [PuntoController::class, 'index'])->name('punto');
 Route::get('ruta', [PuntoController::class, 'ruta'])->name('ruta');
 Route::get('transbordo', [PuntoController::class, 'transbordo'])->name('transbordo');
+Route::get('allpoints', [PuntoController::class, 'allPoints'])->name('all-points');
 
 // RECORRIDO
 Route::get('recorrido', [RecorridoController::class, 'index'])->name('recorrido');
+Route::get('recorridoLinea', [RecorridoController::class, 'recorridoLinea'])->name('recorrido.linea');
