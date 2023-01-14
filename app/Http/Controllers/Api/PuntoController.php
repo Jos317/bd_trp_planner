@@ -12,20 +12,20 @@ class PuntoController extends Controller
     {
         try {
             $punto = Punto::join('recorridos', 'puntos.recorrido_id', 'recorridos.id')
-            ->select('puntos.id', 'puntos.longi', 'puntos.lati', 'recorridos.id as recorrido_id', 'recorridos.linea_id', 'recorridos.color')
+            ->select('puntos.id', 'puntos.FID_stops2','puntos.longi', 'puntos.lati', 'recorridos.id as recorrido_id', 'recorridos.linea_id', 'recorridos.color')
             ->where('recorridos.linea_id', $request->recorrido)
             ->first();
             $id = $punto->recorrido_id;
             $punto = $punto->recorrido_id % 2;
             if($punto == $request->par){
                 $puntos = Punto::join('recorridos', 'puntos.recorrido_id', 'recorridos.id')
-                ->select('puntos.id', 'puntos.longi', 'puntos.lati', 'recorridos.id as recorrido_id', 'recorridos.linea_id', 'recorridos.color')
+                ->select('puntos.id', 'puntos.FID_stops2', 'puntos.longi', 'puntos.lati', 'recorridos.id as recorrido_id', 'recorridos.linea_id', 'recorridos.color')
                 ->where('recorridos.linea_id', $request->recorrido)->where('recorridos.id', $id)
                 ->get();
             }else{
                 $id = $id + 1;
                 $puntos = Punto::join('recorridos', 'puntos.recorrido_id', 'recorridos.id')
-                ->select('puntos.id', 'puntos.longi', 'puntos.lati', 'recorridos.id as recorrido_id', 'recorridos.linea_id', 'recorridos.color')
+                ->select('puntos.id', 'puntos.FID_stops2', 'puntos.longi', 'puntos.lati', 'recorridos.id as recorrido_id', 'recorridos.linea_id', 'recorridos.color')
                 ->where('recorridos.linea_id', $request->recorrido)->where('recorridos.id', $id)
                 ->get();
             }
@@ -68,12 +68,14 @@ class PuntoController extends Controller
                     if($puntosorigen[$i]->FID_stops2 == $puntosdestino[$j]->FID_stops2){
                         $ordenorigen = $puntosorigen[$i]->orden;
                         $ordendestino = $puntosdestino[$j]->orden;
+                        break 2;
                     }
                 }
             }
 
             $array = [];
             $array2 = [];
+
             if($puntoorigen->orden < $ordenorigen){
                 for ($i=$puntoorigen->orden; $i <= $ordenorigen; $i++) {
                     array_push($array, $puntosorigen[$i-1]);
@@ -82,20 +84,23 @@ class PuntoController extends Controller
                 for ($i=$ordenorigen; $i <= $puntoorigen->orden; $i++) {
                     array_push($array, $puntosorigen[$i-1]);
                 }
+                $array = array_reverse($array);
             }
 
             if($puntodestino->orden < $ordendestino){
-                for ($i=$puntodestino->orden; $i <= $ordendestino; $i++) {
+                for ($i=$puntodestino->orden; $i < $ordendestino; $i++) {
                     array_push($array2, $puntosdestino[$i-1]);
                 }
+                $array2 = array_reverse($array2);
             }else{
-                for ($i=$ordendestino; $i <= $puntodestino->orden; $i++) {
+                for ($i=$ordendestino+1; $i < $puntodestino->orden+1; $i++) {
                     array_push($array2, $puntosdestino[$i-1]);
                 }
+                
             }
             
-            $array = array_reverse($array);
-            $array2 = array_reverse($array2);
+            // $array = array_reverse($array);
+            // $array2 = array_reverse($array2);
 
             $count = count($array2);
             for ($i=0; $i < $count; $i++) {
